@@ -1,8 +1,9 @@
 # For Raffi
 
 library(tidyverse)
-library(rgdal)
+library(sp)
 library(sf)
+library(tidycensus)
 library(tigris)
 
 ## DATA 
@@ -81,5 +82,5 @@ dt <- left_join(points.sp@data, dt.pre) %>%
 # filter census data so it only includes tracts with OHCA 
 incl.tract <- filter(ctcensus, NAME %in% dt$CENSUS) 
 
-
-
+census_api_key(censusapikey)
+censustracts<-dt$CENSUS

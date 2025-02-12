@@ -16,12 +16,42 @@ lapply(packages, library, character.only=T)
 rm(packages)
 ```
 ```{r}
-some.tracts <- tracts(state="ct", county = "New London")
-track<- tracts("CT", "New Haven", cb= TRUE)
-plot(track$geometry)
+some.tracts <- tracts(state="ct", county = "new haven", class = "sf", year = 2019)  %>%  st_transform(32148) %>%
+  erase_water(area_threshold = 0.99)
+track<- tracts("CT", 009, cb = T, year= 2019)
+plot(some.tracts$geometry) %>% erase_water()
 
-ggplot(track) + geom_sf()
+# Load necessary libraries
+library(tigris)   # For census tracts data
+library(ggplot2)  # For plotting
+library(sf)       # For handling spatial data
+library(dplyr)    # For data manipulation
 
+# Options to improve tigris performance
+options(tigris_use_cache = TRUE)
+
+# Get census tracts for New Haven County, CT (in sf format)
+some.tracts <- tracts(state = "CT", county = "New Haven")
+
+# Transform to a projected CRS (Connecticut State Plane: EPSG 26956)
+some.tracts_proj <- st_transform(some.tracts, 32148)
+
+# Remove water areas
+some.tracts_no_water <- erase_water(some.tracts_proj)
+
+# Transform back to lat/lon (EPSG: 4326) for mapping
+some.tracts_no_water <- st_transform(some.tracts, 4326)
+
+# Plot using ggplot
+ggplot(data = some.tracts_no_water) +
+  geom_sf(aes(fill = as.factor(GEOID)), color = "black") +  # Different colors per tract
+  scale_fill_viridis_d() +  # Use a distinct color scale
+  theme_minimal() +
+  labs(title = "Census Tracts in New Haven County, CT (Land Only)") + guides(fill = "none")
+
+
+x<- ggplot(track, aes(fill=NAME, mapping = geometry)) + geom_sf()
+x
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
