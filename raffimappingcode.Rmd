@@ -2,6 +2,9 @@
 title: "R Notebook"
 output: html_notebook
 ---
+https://www.census.gov/data/academy/courses/choroplethr.html
+https://walker-data.com/census-r/mapping-census-data-with-r.html
+https://www.rdocumentation.org/packages/choroplethr/versions/3.7.3
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
@@ -13,8 +16,12 @@ lapply(packages, library, character.only=T)
 rm(packages)
 ```
 ```{r}
-some.tracts <- tracts(state="ct")
-plot(some.tracts$geometry)
+some.tracts <- tracts(state="ct", county = "New London")
+track<- tracts("CT", "New Haven", cb= TRUE)
+plot(track$geometry)
+
+ggplot(track) + geom_sf()
+
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
